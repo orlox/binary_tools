@@ -11,27 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 rd.seed(9)
+from functions import rand_theta(), rand_phi(), rand_velocity(c)
 
-'''creating the functions'''
-
-def rand_direction():
-    rand_phi = 2*np.pi*rd.random()
-    rand_theta = np.arccos(1 - 2*rd.random())
-    return rand_phi, rand_theta
-
-def rand_phi():
-    rand_phi = 2*np.pi*rd.random()
-    return rand_phi
-
-def rand_theta():
-    rand_theta = np.arccos(1 - 2*rd.random())
-    return rand_theta
-
-def rand_velocity(c):
-    rand_velocity = maxwell.isf(rd.random(), 0, scale = c)
-    return rand_velocity
-
-'''testing the fuctions'''
 
 phi_array = np.zeros(10000)
 for i in range(0,len(phi_array)):
