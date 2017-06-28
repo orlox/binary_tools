@@ -1,0 +1,27 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun 28 11:13:47 2017
+
+@author: kaliroe
+"""
+import random as rd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import maxwell
+rd.seed(9)
+
+from random_conditions import rand_phi, rand_theta, rand_velocity
+
+G = 6.67408*10**(-11)  #m**3 kg**-1 s**-2
+
+def circular_conditions(Ai, M1, M2, Mns, theta, phi, Vk):
+    Vr = G*(M1+M2)/Ai
+    Vkx = np.cos(theta)*Vk
+    Vky = np.sin(theta)*np.sin(phi)*Vk
+    Vkz = np.sin(theta)*np.cos(phi)*Vk
+    Af = G*(Mns + M2)*(2*G*(Mns+M2)/Ai -Vk**2 -Vr**2 - 2*Vky*Vr)**(-1)
+    
+    return theta_new, e, Af
+
+
