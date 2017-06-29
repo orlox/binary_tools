@@ -8,10 +8,6 @@ Created on Wed Jun 28 11:13:47 2017
 import random as rd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import maxwell
-rd.seed(9)
-
-from functions import rand_phi, rand_theta, rand_velocity
 
 G = 6.67408*10**(-11)  #m**3 kg**-1 s**-2
 
