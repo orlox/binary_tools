@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 G = 6.67408*10**(-11)  #m**3 kg**-1 s**-2
 
 def circular_conditions(Ai, M1, M2, Mns, theta, phi, Vk):
-    Vr = G*(M1+M2)/Ai
+    Vr = (G*(M1+M2)/Ai)**(1/2)
     Vkx = np.cos(theta)*Vk
     Vky = np.sin(theta)*np.sin(phi)*Vk
     Vkz = np.sin(theta)*np.cos(phi)*Vk
