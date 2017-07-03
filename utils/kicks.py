@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import random as rd
 import numpy as np
-from constants import *
+from binary_tools.utils.constants import *
 
 __author__ = "Kaliroe Pappas"
 __credits__ = ["Kaliroe Pappas"]
