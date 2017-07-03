@@ -1,6 +1,17 @@
-#constants, all in CGS
-#these are the MESA defined values
-#astro variables are from Bahcall et al, ApJ 618 (2005) 1049-1056
+#!/usr/bin/env python
+
+__author__ = "Pablo Marchant"
+__credits__ = ["Pablo Marchant"]
+__license__ = "GPL"
+__version__ = "3.0"
+__maintainer__ = "Pablo Marchant"
+__email__ = "pamarca@gmail.com"
+
+"""Various constants, all in CGS
+these are the MESA defined values
+astro variables are from Bahcall et al, ApJ 618 (2005) 1049-1056
+"""
+
 clight = 2.99792458e10
 cgrav = 6.67428e-8
 Msun = 1.9892e33
