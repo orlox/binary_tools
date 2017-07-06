@@ -30,6 +30,6 @@ def keplers_third_law(semi_major_axis, mass_1, mass_2):
     mass_1 = mass_1*Msun
     mass_2 = mass_2*Msun
     semi_major_axis = semi_major_axis*1e5
-    period = np.sqrt(4*np.pi**2*(semi_major_axis**3)/(cgrav*(mass_1+mass_2)))/secyear
+    period = np.sqrt(4*np.pi**2*(semi_major_axis**3)/(cgrav*(mass_1+mass_2)))/(3600*24)
     return period
     
