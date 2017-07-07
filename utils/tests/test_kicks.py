@@ -26,6 +26,7 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
+        - save: saves the plot if plot=True
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -71,6 +72,7 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
+        - save: saves the plot if plot=True
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -116,6 +118,7 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
+        - save: saves the plot if plot=True
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
