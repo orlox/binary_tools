@@ -2,6 +2,7 @@
 import random as rd
 import numpy as np
 from binary_tools.utils.constants import *
+from scipy.stats import maxwell
 
 __author__ = "Kaliroe Pappas"
 __credits__ = ["Kaliroe Pappas"]
@@ -83,8 +84,8 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
     #compute the final relative velocity of the system
     #See Kalogera (1996) for a definition of the axes
     Vr = np.sqrt(cgrav*(M1+M2)/Ai)
-    Vkz = np.cos(theta)*Vk
-    Vky = np.sin(theta)*np.sin(phi)*Vk
+    Vky = np.cos(theta)*Vk
+    Vkz = np.sin(theta)*np.sin(phi)*Vk
     Vkx = np.sin(theta)*np.cos(phi)*Vk
 
     #compute post explosion orbital parameters
@@ -92,6 +93,7 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
     Af = cgrav*(M1f + M2)/(2*cgrav*(M1f+M2)/Ai -Vk**2 -Vr**2 - 2*Vky*Vr)
     e = np.sqrt(1 - (Vkz**2 + Vky**2 + Vr**2 + 2*Vky*Vr)*Ai**2/(cgrav*(M1f+M2)*Af))
     theta_new = np.arccos((Vky + Vr)/np.sqrt((Vky+Vr)**2 +Vkz**2))
+    
 
     return Af/Rsun, e, theta_new
 
