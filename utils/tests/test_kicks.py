@@ -16,7 +16,7 @@ __email__ = "kmpappa2@illinois.edu"
 """Test the functions in the kicks.py module
 """
 
-def test_rand_phi(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jean", plot=False):
+def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plot=False, save=True):
     """Test that phi is sampled as flat from zero to pi
     Arguments:
         - num_sample: number of random phi generated
@@ -37,16 +37,18 @@ def test_rand_phi(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jean", pl
     #TODO: use numpy histogram, to avoid plotting if its not neccesary
     vals_phi, bins_phi = np.histogram(phi_array, bins=np.linspace(0,np.pi,nbins))
     if plot:
-        plt.hist(phi_array, bins=np.linspace(0,np.pi,20))
+        plt.hist(phi_array, bins=np.linspace(0,np.pi,nbins))
         plt.title("phi distribution")
         plt.xlabel("phi value")
         plt.ylabel("distribution")
         plt.show()
+        if save:
+            plt.savefig()
         plt.close()
 
     #check if the probability computed for each bin is within the tolerance
     success = True
-    tolerance = max(vals_phi)/10**3
+    tolerance = max(vals_phi)*tolerance
     for k in range(0,len(vals_phi)):
         prob_hist = vals_phi[k]/(sum(vals_phi))
         prob_test = (1/(2*np.pi))*(bins_phi[k+1]-bins_phi[k])
@@ -59,7 +61,7 @@ def test_rand_phi(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jean", pl
 
     return success
 
-def test_rand_theta(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jubilee", plot=False):
+def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee", plot=False, save=True):
     """Test that theta is sampled as a sign graph from zero to pi
     Arguments:
         - num_sample: number of random theta generated
@@ -80,15 +82,17 @@ def test_rand_theta(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jubilee
     #TODO: use numpy histogram, to avoid plotting if its not neccesary
     vals_theta, bins_theta = np.histogram(theta_array, bins=np.linspace(0,np.pi,nbins))
     if plot:
-        plt.hist(theta_array, bins=np.linspace(0,np.pi,20))
+        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins))
         plt.title("theta distribution")
         plt.xlabel("theta value")
         plt.ylabel("distribution")
         plt.show()
+        if save:
+            plt.savefig()
         plt.close()
     #check if the probability computed for each bin is within the tolerance
     success = True
-    tolerance = max(vals_theta)/10**3
+    tolerance = max(vals_theta)*tolerance
     for k in range(0,len(vals_theta)):
         prob_hist = vals_theta[k]/(sum(vals_theta))
         prob_test = -(np.cos(bins_theta[k+1])-np.cos(bins_theta[k]))/2
@@ -101,7 +105,7 @@ def test_rand_theta(num_sample=100000, nbins=20, tolerance = 1e-3, seed="Jubilee
 
     return success
 
-def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="Dimitris", plot=False):
+def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="Dimitris", plot=False, save=True):
     """Test that the velocity output is sampled as a maxwellian
     Arguments:
         - sigma: argument needed to run rand_velocity
@@ -120,17 +124,19 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         velocity_array[k] = kicks.rand_velocity(sigma)
     
     #do a histogram
-    vals_velocity, bins_velocity = np.histogram(velocity_array, bins=np.linspace(0,5*sigma,20))
+    vals_velocity, bins_velocity = np.histogram(velocity_array, bins=np.linspace(0,3*sigma,nbins))
     if plot:    
-        plt.hist(velocity_array, bins=np.linspace(0,5*sigma,20))
+        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins))
         plt.title("velocity distribution")
         plt.xlabel("velocity value")
         plt.ylabel("distribution")
         plt.show()
+        if save:
+            plt.savefig()
         plt.close()
     #check if the probability computed from each bin is within the tolerance
     success = True
-    tolerance = max(vals_velocity)/10**3
+    tolerance = max(vals_velocity)*tolerance
     for k in range(0,len(vals_velocity)):
         prob_hist = vals_velocity[k]/(sum(vals_velocity))
         prob_test = maxwell.cdf(bins_velocity[k+1],0,sigma) - maxwell.cdf(bins_velocity[k+1],0,sigma)
