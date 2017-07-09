@@ -26,7 +26,7 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot if plot=True
+        - save: saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -43,8 +43,13 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         plt.xlabel("phi value")
         plt.ylabel("distribution")
         plt.show()
-        if save:
-            plt.savefig()
+        plt.close()
+    if save:
+        plt.hist(phi_array, bins=np.linspace(0,np.pi,nbins))
+        plt.title("phi distribution")
+        plt.xlabel("phi value")
+        plt.ylabel("distribution")
+        plt.savefig("phi_distribution.png")
         plt.close()
 
     #check if the probability computed for each bin is within the tolerance
@@ -72,7 +77,7 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot if plot=True
+        - save: saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -89,8 +94,13 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         plt.xlabel("theta value")
         plt.ylabel("distribution")
         plt.show()
-        if save:
-            plt.savefig()
+        plt.close()
+    if save:
+        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins))
+        plt.title("theta distribution")
+        plt.xlabel("theta value")
+        plt.ylabel("distribution")
+        plt.savefig("theta_distribution.png")
         plt.close()
     #check if the probability computed for each bin is within the tolerance
     success = True
@@ -118,7 +128,7 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot if plot=True
+        - save: saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -134,8 +144,13 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         plt.xlabel("velocity value")
         plt.ylabel("distribution")
         plt.show()
-        if save:
-            plt.savefig()
+        plt.close()
+    if save:
+        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins))
+        plt.title("velocity distribution")
+        plt.xlabel("velocity value")
+        plt.ylabel("distribution")
+        plt.savefig("velocity_distribution.png")
         plt.close()
     #check if the probability computed from each bin is within the tolerance
     success = True
