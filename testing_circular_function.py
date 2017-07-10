@@ -28,13 +28,13 @@ def testing_circular_function(test_sigma = 15, test_M1 = 5.5, test_M2 = 55, test
     """Test that the graph of the eccentricity vs the period looks correct
     Arguments:
         - test_sigma: a sample sigma for the rand_velocity function
-        - test_M1 = solar mass of the first mass pre-explosion
-        - test_M2 = solar mass of the second mass
-        - test_Ai = the initial maximum separation of the two masses
+        - test_M1: solar mass of the first mass pre-explosion
+        - test_M2: solar mass of the second mass
+        - test_Ai: the initial maximum separation of the two masses
             pre-explosion
-        - test_Mns = solar mass of the first mass post-explosion
+        - test_Mns: solar mass of the first mass post-explosion
         - seed: the seed used for the random number generator
-        - sample_velocity = a constant velocity over which a line is
+        - sample_velocity: a constant velocity over which a line is
             drawn on the graph
         - npoints: number of points sampled
     Returns: 'Compare graph to paper'
