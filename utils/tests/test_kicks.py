@@ -167,5 +167,60 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
     
     return success
 
+def testing_circular_function_momentum(Ai, M1, M2, Mns, test_sigma, num_sample=10000, seed = "Lela", tolerance=1e-3):
+    """Test that the post_explosion_params_circular function produces
+    a correct momentum against a calculated momentum
+    Arguments:
+        - Ai: the initial maximum separation of the two masses
+            pre-explosion
+        - M1: solar mass of the first mass pre-explosion
+        - M2: solar mass of the second mass
+        - Mns: solar mass of the first mass post-explosion
+        - test_sigma: a sample sigma for the rand_velocity function
+        - num_sample: number of points sampled
+        - seed: the seed used for the random number generator
+        - tolerance: tolerance for the test
+    Returns: True or False as to whether the test was successful
+    """  
+    rd.seed(seed)
+    test_array = np.zeros(num_sample)
+    
+    for i in range(len(test_array)):
+        Vk = kicks.rand_velocity(test_sigma)
+        theta = kicks.rand_theta()
+        phi = kicks.rand_phi()
+        
+        separation, e, angle, boolean = kicks.post_explosion_params_circular(Ai, M1, M2, Mns,theta,phi,Vk)
+        Momentum_function = M1*Msun*M2*Msun*np.sqrt(cgrav*(1-e**2)/((M1+M2)*Msun))
+        
+        omega = Vk*1e5/(Ai*Rsun) #rad/second
+        R2 = Ai*Rsun*M1/(M1+M2) #cm
+        R1 = Ai*Rsun - R2 #cm
+        
+        V1_initial = M2/(M1+M2)*omega*Ai*Rsun #cm/second
+        V2 = M1/(M1+M2)*omega*Ai*Rsun #cm/second,-y direction
+        V1x_final = Vk*1e5*np.sin(phi)*np.cos(theta)
+        V1y_final = V1_initial + Vk*1e5*np.cos(theta)
+        V1z_final = Vk*1e5*np.sin(phi)*np.sin(theta)
+        
+        Momentum_1y = -R1*V1z_final*M1*Msun
+        Momentum_1z = R1*V1y_final*M1*Msun
+        Momentum_2 = R2*V2*M2*Msun #z direction
+        Momentum_calculated = np.sqrt(Momentum_1y**2 + Momentum_1z**2 + Momentum_2**2)
+        
+        success = True
+        if abs(Momentum_function - Momentum_calculated)>tolerance:
+            success = False
+            
+        rd.seed()
+        
+    return success
+        
+
+
+
+
+
+
         
         
