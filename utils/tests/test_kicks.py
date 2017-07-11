@@ -49,7 +49,7 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         plt.title("phi distribution")
         plt.xlabel("phi value")
         plt.ylabel("distribution")
-        plt.savefig("phi_distribution.png")
+        plt.savefig("images/phi_distribution.png")
         plt.close()
 
     #check if the probability computed for each bin is within the tolerance
