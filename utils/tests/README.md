@@ -4,4 +4,4 @@
 
 I ran a test of random sampling
 
-![test phi](images/test_phi.png)
+![test phi](images/phi_distribution.png)
