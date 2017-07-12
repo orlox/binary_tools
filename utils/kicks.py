@@ -70,8 +70,8 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
         - Vk: kick velocity, in km/s
 
     Returns: The final separation in Rsun, final eccentricity,
-        and the angle between the pre and post explosion orbital
-        planes.
+    the angle between the pre and post explosion orbital plane, and 
+    a boolean describing if the orbit is unbound.
     """
 
     #turn input into CGS
