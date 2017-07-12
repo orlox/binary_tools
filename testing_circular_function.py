@@ -24,7 +24,7 @@ __email__ = "kmpappa2@illinois.edu"
 
 """A function that tests the post_explosion_params_circular function""" 
 
-def testing_circular_function(test_sigma = 15, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000):
+def testing_circular_function(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000):
     """Test that the graph of the eccentricity vs the period looks correct
     Arguments:
         - test_sigma: a sample sigma for the rand_velocity function
