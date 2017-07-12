@@ -244,7 +244,7 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
 
 
 
-def testing_circular_function_graph(test_sigma = 15, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True):
+def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True):
     """Test that the graph of the eccentricity vs the period looks correct
     Arguments:
         - test_sigma: a sample sigma for the rand_velocity function
