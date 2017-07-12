@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from binary_tools.utils.constants import *
 from binary_tools.utils import kicks
+from binary_tools.utils.Keplers_laws import *
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 import random as rd
@@ -26,7 +27,7 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot
+        - save: if true, saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -77,7 +78,7 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot
+        - save: if true, saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -128,7 +129,7 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         - tolerance: tolerance for the test
         - seed: the seed used for the random number generator
         - plot: if true, plot results
-        - save: saves the plot
+        - save: if true, saves the plot
     Returns: True if the test is succesful, False otherwise
     """
     rd.seed(seed)
@@ -167,9 +168,17 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
     
     return success
 
-def testing_circular_function_momentum(Ai, M1, M2, Mns, test_sigma, num_sample=1000, seed = "Lela", tolerance=1e-3):
+def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=1000, seed = "Lela", tolerance=1e-3):
     """Test that the post_explosion_params_circular function produces
-    a correct momentum against a calculated momentum
+    a correct angular momentum against a calculated angular momentum. This 
+    angular momentum is calculated by first finding the anglar velocity, and 
+    the individual relative velocities in the center of mass frame pre-
+    explosion. The components of the kick velocity were then added to the 
+    velocity of mass 1, which is the super nova mass. The separation in the 
+    final center of mass frame accounting for the loss of mass of mass 1 is 
+    crossed with the velocities to get the components of angular momentum. The 
+    total angular momentum is calculated by taking the absolute value of these 
+    components. 
     Arguments:
         - Ai: the initial maximum separation of the two masses
             pre-explosion
@@ -199,11 +208,8 @@ def testing_circular_function_momentum(Ai, M1, M2, Mns, test_sigma, num_sample=1
         
         #Calculating the momentum without using the results of the function
         
-        #establishing angular velocity and separations from the center of
-            #mass in the center of mass frame
+        #establishing angular velocity 
         omega = np.sqrt(cgrav*Msun*(M1+M2)/(Ai*Rsun)**3) #rad/second
-        R2 = Ai*Rsun*Mns/(Mns+M2) #cm
-        R1 = Ai*Rsun - R2 #cm
         
         #velocities of the masses before the kick 
         V1_initial = M2/(M1+M2)*omega*Ai*Rsun #cm/second
@@ -213,6 +219,10 @@ def testing_circular_function_momentum(Ai, M1, M2, Mns, test_sigma, num_sample=1
         V1x_final = Vk*1e5*np.sin(phi)*np.cos(theta)
         V1y_final = V1_initial + Vk*1e5*np.cos(theta)
         V1z_final = Vk*1e5*np.sin(phi)*np.sin(theta)
+        
+        #separations from the center of mass in the center of mass frame post-explosion
+        R2 = Ai*Rsun*Mns/(Mns+M2) #cm
+        R1 = Ai*Rsun - R2 #cm
         
         #calculating the components of the angular momentum using the cross product
         Momentum_1y = -R1*V1z_final*Mns*Msun
@@ -234,7 +244,70 @@ def testing_circular_function_momentum(Ai, M1, M2, Mns, test_sigma, num_sample=1
 
 
 
+def testing_circular_function_graph(test_sigma = 15, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True):
+    """Test that the graph of the eccentricity vs the period looks correct
+    Arguments:
+        - test_sigma: a sample sigma for the rand_velocity function
+        - test_M1: solar mass of the first mass pre-explosion
+        - test_M2: solar mass of the second mass
+        - test_Ai: the initial maximum separation of the two masses
+            pre-explosion
+        - test_Mns: solar mass of the first mass post-explosion
+        - seed: the seed used for the random number generator
+        - sample_velocity: a constant velocity over which a line is
+            drawn on the graph
+        - npoints: number of points sampled
+        - plot: if true, plot results
+        - save: if true, saves the plot
+    Returns: 'Compare graph to paper'
+    """  
+    rd.seed(seed)
+    testing_function = np.zeros([npoints,2])
+    constant_velocity = np.zeros([npoints,2])
 
+    for i in range(len(testing_function)):  
+        separation, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
+        testing_function[i][0] = separation
+        testing_function[i][1] = e
+    
+    theta = np.linspace(0,3.14,npoints)
+    velocity = np.linspace(0,400,npoints)
+    
+    for j in range(len(constant_velocity)):
+        separation, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity)
+        constant_velocity[j][0] = separation 
+        constant_velocity[j][1] = e
+    
+    """changing the semi-major axis to period values in days"""
+    
+    for k in range(len(testing_function)):
+        testing_function[k][0] = keplers_third_law(testing_function[k][0],test_M2,test_Mns)
+        constant_velocity[k][0] = keplers_third_law(constant_velocity[k][0],test_M2,test_Mns)
+    
+    if plot:    
+        plt.plot(testing_function[:,0], testing_function[:,1], "o")
+        plt.xlim(0,50)
+        plt.ylim(0,1)
+        plt.plot(constant_velocity[:,0], constant_velocity[:,1], 'k-')
+        plt.title("post-explosion results")
+        plt.xlabel("Period in days")
+        plt.ylabel("Eccentricity")
+        plt.show()
+        plt.close()
+    if save:
+        plt.plot(testing_function[:,0], testing_function[:,1], "o")
+        plt.xlim(0,50)
+        plt.ylim(0,1)
+        plt.plot(constant_velocity[:,0], constant_velocity[:,1], 'k-')
+        plt.title("post-explosion results")
+        plt.xlabel("Period in days")
+        plt.ylabel("Eccentricity")
+        plt.savefig("post_explosion_circular_graph.png")
+        plt.close()
+    
+    rd.seed()
+    
+    return "True"
 
 
         
