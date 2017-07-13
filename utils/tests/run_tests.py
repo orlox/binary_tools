@@ -44,3 +44,4 @@ def run_tests():
         print("testing_circular_function_graph worked")
     else:
         print("testing_circular_function_graph FAILED!!!!!")
+    return True
