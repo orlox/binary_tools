@@ -42,5 +42,6 @@ testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, t
 
 I also created a function that tests the post_explosion_params_circular function by comparing the momentum calculated from that fuction, to a momentum calculated from other known values
 ```
-testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=1000, seed = "Lela", tolerance=1e-3)
+testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=1000, 
+seed = "Lela", tolerance=1e-3)
 ```
