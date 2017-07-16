@@ -94,10 +94,12 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
     e = np.sqrt(1 - (Vkz**2 + Vky**2 + Vr**2 + 2*Vky*Vr)*Ai**2/(cgrav*(M1f+M2)*Af))
     theta_new = np.arccos((Vky + Vr)/np.sqrt((Vky+Vr)**2 +Vkz**2))
     
-    unbound = False
+    bound = True
     if e > 1:
-        unbound = True
+        bound = False
+        
+    assert (e < 1),"system is unbound"
     
 
-    return Af/Rsun, e, theta_new, unbound
+    return Af/Rsun, e, theta_new, bound
 
