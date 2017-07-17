@@ -103,3 +103,54 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
 
     return Af/Rsun, e, theta_new, bound
 
+def rand_true_anomaly(e,num_sample=1000):
+    """Computes a random true anomaly an eliptical orbit using a
+     Montecarlo sampling method and drawing a random number from 
+     an array of possibilities. Calculation follows Dosopoulou
+     (2016), ApJ, 825, 70D
+    Arguments:
+        - e: eccentricity of the orbit
+        - num_sample: number of random true anomalies generated
+        -the maximum value was chosen based on the principle that
+            a mass in an eliptical orbit moves the slowest at apogee
+            and therefore is most likely to be found there. In this 
+            case apogee occurs at pi.
+    Returns: a random true_anomaly
+    """
+    x_array = np.zeros(num_sample)
+    y_array = np.zeros(num_sample)
+    
+    i = 0
+    
+    while i < num_sample:
+        randx = rd.uniform(0,2*np.pi)
+        randy = rd.uniform(0, np.sqrt(1/(4*np.pi))*(1-e**2)**(1.5)/(1+e*np.cos(np.pi)))
+        
+        if np.sqrt(1/(4*np.pi))*(1-e**2)**(1.5)/(1+e*np.cos(randx))>randy:
+            x_array[i] = randx
+            y_array[i] = randy
+            i = i + 1
+            
+        else:
+            continue
+    
+    
+    return x_array[rd.randint(0,num_sample)]
+
+
+def rand_separation(e, Ai):
+    """Computes a random separation using the rand_true_anomaly
+    function.
+    Arguments:
+        - e: eccentricity of the orbit
+        - Ai: initial orbital separation in Rsun
+    Returns: a random separation in Rsun
+    """
+    u = rand_true_anomaly(e)
+    separation = Ai*(1 - e**2)/(1+e*np.cos(u))
+    
+    return separation
+
+
+
+
