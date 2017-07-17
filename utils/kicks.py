@@ -98,7 +98,7 @@ def post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk):
     if e > 1:
         bound = False
         
-    assert (e < 1),"system is unbound"
+#    assert (e < 1),"system is unbound"
     
 
     return Af/Rsun, e, theta_new, bound
@@ -135,7 +135,7 @@ def rand_true_anomaly(e,num_sample=1000):
             continue
     
     
-    return x_array[rd.randint(0,num_sample)]
+    return x_array[rd.randint(0,num_sample-1)]
 
 
 def rand_separation(e, Ai):
@@ -194,9 +194,8 @@ def post_explosion_params_general(Ai, M1, M2, Mns, phi, Vk, true_anomaly, e):
     if e_final > 1:
         bound = False
         
-    assert (e_final < 1),"system is unbound"
     
 
-    return Af/Rsun, e, bound
+    return Af/Rsun, e_final, bound
         
 
