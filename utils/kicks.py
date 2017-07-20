@@ -30,7 +30,9 @@ def rand_kick(sigma):
 def rand_theta():
     """Randomly sample the polar angle of the kick direction.
     We define theta=0 as a kick in the same direction of the orbital motion
-
+    Calcuted from the following distribution:
+        f(x) = (1/2)sin(theta)
+        
     Returns: the randomly sampled value of theta
     """
     rand_theta = np.arccos(1 - 2*rd.random())
@@ -38,7 +40,9 @@ def rand_theta():
 
 def rand_phi():
     """Randomly sample the azimuthal angle of the kick direction.
-
+    Calcuted from the following distribution:
+        f(x) = 1
+    
     Returns: the randomly sampled value of phi
     """
     rand_phi = 2*np.pi*rd.random()
@@ -47,9 +51,10 @@ def rand_phi():
 def rand_velocity(sigma):
     """Randomly sample the velocity of the kick direction.
     The kick is assumed to follow a gaussian distribution given
-    by sigma in each cartesian component of the kick. This results in
-    the full kick velocity following a Maxwellian distribution.
-
+    by sigma in each cartesian component of the kick, which makes
+    up the full maxwellian using the velocity in three dimensions:
+    f(v) = (2*pi*sigma^2)^(-1/2)*exp(-v^2/(2*sigma^2))
+    
     Returns: the randomly sampled value of v, in the units of sigma
     """
     rand_velocity = maxwell.isf(rd.random(), 0, scale = sigma)
@@ -107,6 +112,9 @@ def rand_true_anomaly(e):
      Montecarlo sampling method and drawing a random number from 
      an array of possibilities. Calculation follows Dosopoulou
      (2016), ApJ, 825, 70D
+     Calcuted from the following distribution:
+        f(x) = np.sqrt(1/(4*np.pi))*(1-e**2)**(1.5)/((1+e*np.cos(u))**2)
+        
     Arguments:
         - e: eccentricity of the orbit
         -the maximum value was chosen based on the principle that
@@ -132,6 +140,8 @@ def rand_true_anomaly(e):
 def rand_separation(e, Ai):
     """Computes a random separation using the rand_true_anomaly
     function.
+    Calcuted from the following distribution:
+        f(x) = Ai*(1 - e**2)/(1+e*np.cos(u))
     Arguments:
         - e: eccentricity of the orbit
         - Ai: initial orbital separation in Rsun
