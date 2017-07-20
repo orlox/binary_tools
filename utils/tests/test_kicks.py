@@ -435,7 +435,7 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
     return "True"
 
 
-def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100,npoints=10000, plot=True, save =False):
+def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="David Berne",sample_velocity = 100,npoints=10000, plot=True, save =False):
     """Test that the graph of the eccentricity vs the period looks correct
     Arguments:
         - test_sigma: a sample sigma for the rand_velocity function
@@ -457,7 +457,8 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
 
     for i in range(len(testing_function)):  
         separation, e, boolean = kicks.post_explosion_params_general(test_Ai,\
-        test_M1, test_M2, test_Mns, kicks.rand_phi(), kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0),0)
+        test_M1, test_M2, test_Mns, kicks.rand_theta(), kicks.rand_phi(),\
+        kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0),0)
         testing_function[i][0] = separation
         testing_function[i][1] = e
     
@@ -465,7 +466,7 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
-        separation, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,theta[j],kicks.rand_velocity(test_sigma),0,0)
+        separation, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity,0,0)
         constant_velocity[j][0] = separation 
         constant_velocity[j][1] = e
     
@@ -500,7 +501,7 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
     
     return "True"
 
-def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=10000, seed = "Lela", tolerance=1e-3):
+def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=10000, seed = "Clara", tolerance=1e-3):
     """Test that the post_explosion_params_general function produces
     a correct angular momentum against a calculated angular momentum using an 
     eccentricityof zero. This angular momentum is calculated by first finding 
@@ -529,10 +530,11 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
         #establishing random parameters
         Vk = kicks.rand_velocity(test_sigma)*1e5
         theta = kicks.rand_theta()
-        phi = kicks.rand_true_anomaly(0)
+        true_anomaly = kicks.rand_true_anomaly(0)
+        phi = kicks.rand_phi()
         
         #getting values from the post_explosion_params_circular function
-        separation, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,theta,Vk,phi,0)
+        separation, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,theta,phi,Vk,true_anomaly,0)
         
         #calculating the momentum using the results from the function
         Momentum_function = Mns*Msun*M2*Msun*np.sqrt(cgrav*separation*Rsun*(1-e**2)/((Mns+M2)*Msun))
