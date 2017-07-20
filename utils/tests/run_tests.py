@@ -45,3 +45,27 @@ def run_tests():
     else:
         print("testing_circular_function_graph FAILED!!!!!")
     return True
+
+    print("Run testing_circular_function_momentum")
+    result4 = test_kicks.testing_circular_function_momentum()
+    if result4:
+        print("testing_circular_function_momentum worked")
+    else:
+        print("testing_circular_function_graph FAILED!!!!!")
+    return True
+
+    print("Run testing_eccentric_function_graph")
+    result4 = test_kicks.testing_eccentric_function_graph()
+    if result4:
+        print("testing_eccentric_function_graph worked")
+    else:
+        print("testing_eccentric_function_graph FAILED!!!!!")
+    return True
+
+    print("Run testing_eccentric_function_momentum")
+    result4 = test_kicks.testing_eccentric_function_momentum()
+    if result4:
+        print("testing_eccentric_function_momentum worked")
+    else:
+        print("testing_eccentric_function_momentum FAILED!!!!!")
+    return True
