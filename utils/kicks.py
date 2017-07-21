@@ -153,19 +153,19 @@ def rand_separation(e, Ai):
     return separation
 
 
-def post_explosion_params_general(Ai, M1, M2, Mns, theta, phi, Vk, true_anomaly, e):
+def post_explosion_params_general(e, Ai, M1, M2, Mns, theta, phi, Vk, true_anomaly):
     """Computes the post explosion orbital parameters of a binary system,
     assuming the pre-explosion system is in a circular orbit.
     Calculation follows Kalogera (1996), ApJ, 471, 352
 
     Arguments:
+        - e: eccentricity of the orbit
         - Ai: initial orbital separation in Rsun
         - M1: initial mass of the exploding star in Msun
         - M2: mass of the companion star in Msun
         - Mns: final mass of the exploding star in Msun
         - phi: azimuthal angle of the kick direction
         - Vk: kick velocity, in km/s
-        - e: eccentricity of the orbit
         - true_anomaly: the true anomaly in radians
 
     Returns: The final separation in Rsun, final eccentricity, and 
@@ -187,14 +187,16 @@ def post_explosion_params_general(Ai, M1, M2, Mns, theta, phi, Vk, true_anomaly,
     V_theta**2 + V_radius**2 + (Vk**2)*np.sin(theta)**2 +\
     2*Vk*np.sin(theta)*np.cos(phi)*V_radius
     
-    Af = cgrav*(Mns + M2)*(2*cgrav*(Mns + M2)/Ai - V_squared)**(-1)
+    Af = cgrav*(Mns + M2)*(2*cgrav*(Mns + M2)/separation - V_squared)**(-1)
     
     e_final = np.sqrt(1 - ((Vk*np.cos(theta))**2 + 2*Vk*V_theta*np.cos(theta)\
-    + V_theta**2 + (Vk*np.sin(theta)*np.cos(phi))**2)*Ai**2/(cgrav*(Mns + M2)*Af))
+    + V_theta**2 + (Vk*np.sin(theta)*np.sin(phi))**2)*separation**2/(cgrav*(Mns + M2)*Af))
     
     bound = True
     if e_final > 1:
         bound = False
+        
+    print(V_theta*1e-5, V_radius*1e-5,np.sqrt(V_squared)*1e-5)
     
 
     return Af/Rsun, e_final, bound
