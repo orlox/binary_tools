@@ -153,17 +153,18 @@ def rand_separation(e, Ai):
     return separation
 
 
-def post_explosion_params_general(e, Ai, M1, M2, Mns, theta, phi, Vk, true_anomaly):
+def post_explosion_params_general( Ai, M1, M2, Mns, e, theta, phi, Vk, true_anomaly):
     """Computes the post explosion orbital parameters of a binary system,
     assuming the pre-explosion system is in a circular orbit.
     Calculation follows Kalogera (1996), ApJ, 471, 352
 
     Arguments:
-        - e: eccentricity of the orbit
         - Ai: initial orbital separation in Rsun
         - M1: initial mass of the exploding star in Msun
         - M2: mass of the companion star in Msun
         - Mns: final mass of the exploding star in Msun
+        - e: eccentricity of the orbit
+        - theta: polar angle of the kick direction
         - phi: azimuthal angle of the kick direction
         - Vk: kick velocity, in km/s
         - true_anomaly: the true anomaly in radians
