@@ -34,11 +34,16 @@ test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="Dimi
 ```
 ![test velocity](images/velocity_distribution(sigma=10).png)
 
+```
+test_rand_true_anomaly(e,num_sample=10000, nbins=20, tolerance = 1e-3, seed="Rhysand", plot=False, save=True)
+```
+![test rand_true_anomaly](images/true_anomaly_distribution.png)
 
 ```
 testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True)
 ```
 ![test post_explosion_circular](images/post_explosion_circular_graph.png)
+
 
 I also created a function that tests the post_explosion_params_circular function by comparing the momentum calculated from that fuction, to a momentum calculated from other known values
 ```
