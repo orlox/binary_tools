@@ -51,8 +51,8 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         test_array = np.append(test_array, np.ones(int(round(prob_test[j]*num_sample)))*bins_phi[j])
         
     if plot:
-        plt.hist(phi_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(phi_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("phi distribution")
         plt.xlabel("phi value")
         plt.ylabel("distribution")
@@ -60,8 +60,8 @@ def test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plo
         plt.show()
         plt.close()
     if save:
-        plt.hist(phi_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(phi_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("phi distribution")
         plt.xlabel("phi value")
         plt.ylabel("distribution")
@@ -116,8 +116,8 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         test_array = np.append(test_array, np.ones(int(round(prob_test[j]*num_sample)))*bins_theta[j])
     
     if plot:
-        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("theta distribution")
         plt.xlabel("theta value")
         plt.ylabel("distribution")
@@ -125,8 +125,8 @@ def test_rand_theta(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jubilee"
         plt.show()
         plt.close()
     if save:
-        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(theta_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("theta distribution")
         plt.xlabel("theta value")
         plt.ylabel("distribution")
@@ -180,8 +180,8 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         test_array = np.append(test_array, np.ones(int(round(prob_test[j]*num_sample)))*bins_velocity[j])
     
     if plot:    
-        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "expected value")
         plt.title("velocity distribution")
         plt.xlabel("velocity value")
         plt.ylabel("distribution")
@@ -189,8 +189,8 @@ def test_rand_velocity(sigma, num_sample=10000, nbins=20, tolerance=1e-3, seed="
         plt.show()
         plt.close()
     if save:
-        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(velocity_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,3*sigma,nbins), alpha = 0.5, label = "expected value")
         plt.title("velocity distribution")
         plt.xlabel("velocity value")
         plt.ylabel("distribution")
@@ -255,8 +255,8 @@ def test_rand_true_anomaly(e,num_sample=10000, nbins=20, tolerance = 1e-3, seed=
     
 
     if plot:
-        plt.hist(true_anomaly_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(true_anomaly_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("true anomaly distribution")
         plt.xlabel("true anomaly value")
         plt.ylabel("distribution")
@@ -264,8 +264,8 @@ def test_rand_true_anomaly(e,num_sample=10000, nbins=20, tolerance = 1e-3, seed=
         plt.show()
         plt.close()
     if save:
-        plt.hist(true_anomaly_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function")
-        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "comparison")
+        plt.hist(true_anomaly_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "function output")
+        plt.hist(test_array, bins=np.linspace(0,2*np.pi,nbins), alpha = 0.5, label = "expected value")
         plt.title("true anomaly distribution")
         plt.xlabel("true anomaly value")
         plt.ylabel("distribution")
@@ -457,8 +457,8 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
 
     for i in range(len(testing_function)):  
         separation, e, boolean = kicks.post_explosion_params_general(test_Ai,\
-        test_M1, test_M2, test_Mns, kicks.rand_theta(), kicks.rand_phi(),\
-        kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0),0)
+        test_M1, test_M2, test_Mns, 0, kicks.rand_theta(), kicks.rand_phi(),\
+        kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0))
         testing_function[i][0] = separation
         testing_function[i][1] = e
     
@@ -466,7 +466,7 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
-        separation, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity,0,0)
+        separation, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,0,theta[j],0,sample_velocity,0)
         constant_velocity[j][0] = separation 
         constant_velocity[j][1] = e
     
@@ -534,7 +534,7 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
         phi = kicks.rand_phi()
         
         #getting values from the post_explosion_params_circular function
-        separation, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,theta,phi,Vk,true_anomaly,0)
+        separation, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,0,theta,phi,Vk,true_anomaly)
         
         #calculating the momentum using the results from the function
         Momentum_function = Mns*Msun*M2*Msun*np.sqrt(cgrav*separation*Rsun*(1-e**2)/((Mns+M2)*Msun))
@@ -568,6 +568,7 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
         
         #checking that the two momentums are relatively equal
         if abs(Momentum_function - Momentum_calculated)/Momentum_function>tolerance:
+            print(Vk, theta, phi, true_anomaly, Momentum_calculated, Momentum_function, i)
             return False
             
     rd.seed()
@@ -575,4 +576,56 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
     return True
         
 
+def testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed = "Guarnaschelli"):
+    """Test for the posta-explosion_params_general that calulates
+    the necessary kick at perigee and appgee to cause a circular 
+    orbital, then plug that result into the function to ensure it
+    returns an eccentricity of zero.
+    Arguments:
+    - Ai: the initial semi-major axis of the system
+    - M1: solar mass of the first mass pre-explosion
+    - M2: solar mass of the second mass
+    - Mns: solar mass of the first mass post-explosion
+    - num_sample: number of points sampled
+    - seed: the seed used for the random number generator
+    - tolerance: tolerance for the test
+    Returns: True or False as to whether the test was successful
+    """  
+    M1 = M1*Msun
+    M2 = M2*Msun
+    Mns = Mns*Msun
+    Ai = Ai*Rsun
+        
+    
+    e_samples = np.linspace(0,.99,num_sample)
+    
+    for e in e_samples:
+
+        V_apogee = np.sqrt(cgrav*(M1+M2)*(1-e)/(Ai*(1+e)))        
+        V_perigee = np.sqrt(cgrav*(M1+M2)*(1+e)/(Ai*(1-e)))
+
+        V_circular_apogee = np.sqrt(cgrav*(Mns+M2)/(Ai*(1+e)))
+        V_circular_perigee = np.sqrt(cgrav*(Mns+M2)/(Ai*(1-e)))        
+        
+        V_kick_apogee = np.absolute((V_apogee - V_circular_apogee)*1e-5)
+        V_kick_perigee = np.absolute((V_circular_perigee - V_perigee)*1e-5)
+        
+        theta_apogee = np.pi
+        theta_perigee = np.pi
+        
+        if V_circular_apogee > V_apogee:
+            theta_apogee = 0
+        if V_circular_perigee > V_perigee:
+            theta_perigee = 0
+        
+        separation_a, e_a, boulean_a = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_apogee,0,V_kick_apogee,np.pi)
+        separation_p, e_p, boulean_p = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_perigee,0,V_kick_perigee,0)
+        
+        
+        if e_a > 1e-4 or e_p > 1e-4:
+            return False
+        
+    rd.seed()
+        
+    return True
 
