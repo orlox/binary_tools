@@ -196,8 +196,6 @@ def post_explosion_params_general( Ai, M1, M2, Mns, e, theta, phi, Vk, true_anom
     bound = True
     if e_final > 1:
         bound = False
-        
-    print(V_theta*1e-5, V_radius*1e-5,np.sqrt(V_squared)*1e-5)
     
 
     return Af/Rsun, e_final, bound
