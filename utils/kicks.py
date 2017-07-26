@@ -190,8 +190,13 @@ def post_explosion_params_general( Ai, M1, M2, Mns, e, theta, phi, Vk, true_anom
     
     Af = cgrav*(Mns + M2)*(2*cgrav*(Mns + M2)/separation - V_squared)**(-1)
     
-    e_final = np.sqrt(1 - ((Vk*np.cos(theta))**2 + 2*Vk*V_theta*np.cos(theta)\
-    + V_theta**2 + (Vk*np.sin(theta)*np.sin(phi))**2)*separation**2/(cgrav*(Mns + M2)*Af))
+    s = 1 - ((Vk*np.cos(theta))**2 + 2*Vk*V_theta*np.cos(theta)\
+    + V_theta**2 + (Vk*np.sin(theta)*np.sin(phi))**2)*separation**2/(cgrav*(Mns + M2)*Af)
+    
+    if 0 > s > -1e-10:
+        s = 0
+    
+    e_final = np.sqrt(s)
     
     bound = True
     if e_final > 1:
