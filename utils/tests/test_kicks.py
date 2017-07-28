@@ -2,6 +2,7 @@
 from binary_tools.utils.constants import *
 from binary_tools.utils import kicks
 from binary_tools.utils.Keplers_laws import *
+from binary_tools.utils.orbits import *
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 from scipy.integrate import quad
@@ -326,10 +327,10 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
         phi = kicks.rand_phi()
         
         #getting values from the post_explosion_params_circular function
-        separation, e, angle, boolean = kicks.post_explosion_params_circular(Ai, M1, M2, Mns,theta,phi,Vk)
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(Ai, M1, M2, Mns,theta,phi,Vk)
         
         #calculating the momentum using the results from the function
-        Momentum_function = Mns*Msun*M2*Msun*np.sqrt(cgrav*separation*Rsun*(1-e**2)/((Mns+M2)*Msun))
+        Momentum_function = angular_momentum(semi_major,Mns,M2,e)
         
         #Calculating the momentum without using the results of the function
         
@@ -391,16 +392,16 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
     constant_velocity = np.zeros([npoints,2])
 
     for i in range(len(testing_function)):  
-        separation, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
-        testing_function[i][0] = separation
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
+        testing_function[i][0] = semi_major
         testing_function[i][1] = e
     
     theta = np.linspace(0,3.14,npoints)
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
-        separation, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity)
-        constant_velocity[j][0] = separation 
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity)
+        constant_velocity[j][0] = semi_major 
         constant_velocity[j][1] = e
     
     """changing the semi-major axis to period values in days"""
@@ -456,18 +457,18 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
     constant_velocity = np.zeros([npoints,2])
 
     for i in range(len(testing_function)):  
-        separation, e, boolean = kicks.post_explosion_params_general(test_Ai,\
+        semi_major, e, boolean = kicks.post_explosion_params_general(test_Ai,\
         test_M1, test_M2, test_Mns, 0, kicks.rand_theta(), kicks.rand_phi(),\
         kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0))
-        testing_function[i][0] = separation
+        testing_function[i][0] = semi_major
         testing_function[i][1] = e
     
     theta = np.linspace(0,3.14,npoints)
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
-        separation, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,0,theta[j],0,sample_velocity,0)
-        constant_velocity[j][0] = separation 
+        semi_major, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,0,theta[j],0,sample_velocity,0)
+        constant_velocity[j][0] = semi_major 
         constant_velocity[j][1] = e
     
     """changing the semi-major axis to period values in days"""
@@ -533,11 +534,11 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
         true_anomaly = kicks.rand_true_anomaly(0)
         phi = kicks.rand_phi()
         
-        #getting values from the post_explosion_params_circular function
-        separation, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,0,theta,phi,Vk,true_anomaly)
+        #getting values from the post_explosion_params_general function
+        semi_major, e, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,0,theta,phi,Vk,true_anomaly)
         
         #calculating the momentum using the results from the function
-        Momentum_function = Mns*Msun*M2*Msun*np.sqrt(cgrav*separation*Rsun*(1-e**2)/((Mns+M2)*Msun))
+        Momentum_function = angular_momentum(semi_major,Mns,M2,e)
         
         #Calculating the momentum without using the results of the function
         
@@ -576,7 +577,7 @@ def testing_eccentric_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sig
     return True
         
 
-def testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed = "Guarnaschelli"):
+def testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed = "Guarnaschelli",tolerance=1e-4):
     """Test for the posta-explosion_params_general that calulates
     the necessary kick at perigee and appgee to cause a circular 
     orbital, then plug that result into the function to ensure it
@@ -591,6 +592,7 @@ def testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed 
     - tolerance: tolerance for the test
     Returns: True or False as to whether the test was successful
     """  
+    rd.seed(seed)
     M1 = M1*Msun
     M2 = M2*Msun
     Mns = Mns*Msun
@@ -618,14 +620,162 @@ def testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed 
         if V_circular_perigee > V_perigee:
             theta_perigee = 0
         
-        separation_a, e_a, boulean_a = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_apogee,0,V_kick_apogee,np.pi)
-        separation_p, e_p, boulean_p = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_perigee,0,V_kick_perigee,0)
+        semi_major_a, e_a, boulean_a = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_apogee,0,V_kick_apogee,np.pi)
+        semi_major_p, e_p, boulean_p = kicks.post_explosion_params_general(Ai/Rsun,M1/Msun,M2/Msun,Mns/Msun,e,theta_perigee,0,V_kick_perigee,0)
         
         
-        if e_a > 1e-4 or e_p > 1e-4:
+        if e_a > tolerance or e_p > tolerance:
             return False
         
     rd.seed()
         
     return True
 
+
+def testing_inverse_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=1000, num_sample=100, seed="Tamlin",tolerance=1e-4):
+    """Test for the post_explosions_params_general function that kicks
+    a circular system with mass loss, then reverses that with mass 
+    gain back into a circular orbit. There are four different possible
+    ways to reverse the kick that are dependent on the true anomaly 
+    and theta. 1) the inital kick sends the masses into an eccentric
+    orbit in the same initial direction, with a true anomaly between
+    0 and pi. 2) the inital kick sends the masses into an eccentric
+    orbit in the same initial direction, with a true anomaly between
+    pi and 2pi. 3)the inital kick sends the masses into an eccentric
+    orbit in the opposit direction, with a true anomaly between
+    0 and pi. 4) the inital kick sends the masses into an eccentric
+    orbit in the opposit direction, with a true anomaly between
+    pi and 2pi.
+        
+    Arguments:
+    - Ai: the initial semi-major axis of the system
+    - M1: solar mass of the first mass pre-explosion
+    - M2: solar mass of the second mass
+    - Mns: solar mass of the first mass post-explosion
+    - test_sigma: a sample sigma for the rand_velocity function
+    - num_sample: number of points sampled
+    - seed: the seed used for the random number generator
+    - tolerance: tolerance for the test
+    Returns: True or False as to whether the test was successful
+    """  
+    rd.seed(seed)
+    
+    for i in range(num_sample):
+        theta = kicks.rand_theta()
+        V_kick = kicks.rand_velocity(test_sigma)
+        
+        semi_major_i, e_i, boulean_i = kicks.post_explosion_params_general(Ai,M1,M2,Mns,0,theta,0,V_kick,0)
+        k = semi_major_i*(1-e_i**2)/(e_i*Ai) - 1/e_i
+        
+        true_anomaly = np.arccos(k)
+        
+        semi_major_f, e_f, boulean_f = kicks.post_explosion_params_general(semi_major_i,Mns,M2,M1,e_i,np.pi-theta,np.pi,V_kick,true_anomaly)
+        
+        Worked = True
+        
+        if e_f > tolerance:
+            true_anomaly = 2*np.pi - true_anomaly
+            semi_major_f, e_f, boulean_f = kicks.post_explosion_params_general(semi_major_i,Mns,M2,M1,e_i,np.pi-theta,np.pi,V_kick,true_anomaly)
+            if e_f > tolerance:
+                semi_major_f, e_f, boulean_f = kicks.post_explosion_params_general(semi_major_i,Mns,M2,M1,e_i,theta,np.pi,V_kick,true_anomaly)
+                if e_f > tolerance:
+                    true_anomaly = 2*np.pi - true_anomaly
+                    semi_major_f, e_f, boulean_f = kicks.post_explosion_params_general(semi_major_i,Mns,M2,M1,e_i,theta,np.pi,V_kick,true_anomaly)
+                    if e_f > tolerance:
+                        Worked = False       
+                    
+    rd.seed()
+        
+    return Worked
+        
+      
+
+def testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=15, num_sample=100, seed="Lucien",tolerance=1e-4):
+    """Test that the post_explosion_params_general function produces
+    a correct angular momentum against a calculated angular momentum. This 
+    angular momentum is calculated by first finding the velocity of M1 pre-
+    explosion, then adding to that the components of the kick to get a velocity
+    in the theta, phi, and radial direction. This velocity is then changed to 
+    x and y components. Next the center of mass possition and velocity are 
+    calculated, and using those values the relative velocities and postion are
+    calculated. From there, the angular momentum is calculated using the cross-
+    product method, and adding the resulting values.
+    Arguments:
+    - Ai: the initial semi-major axis of the system
+    - M1: solar mass of the first mass pre-explosion
+    - M2: solar mass of the second mass
+    - Mns: solar mass of the first mass post-explosion
+    - test_sigma: a sample sigma for the rand_velocity function
+    - num_sample: number of points sampled
+    - seed: the seed used for the random number generator
+    - tolerance: tolerance for the test
+    Returns: True or False as to whether the test was successful
+    """  
+    rd.seed(seed)
+    e_samples = np.linspace(0,.99,num_sample)
+    
+    for e in e_samples:
+        
+        #establishing random parameters
+        Vk = kicks.rand_velocity(test_sigma)*1e5
+        theta = kicks.rand_theta()
+        phi = kicks.rand_phi()
+        true_anomaly = kicks.rand_true_anomaly(e) 
+        separation_i = Rsun*separation(Ai,e,true_anomaly)
+    
+        #getting values from the post_explosion_params_general function
+        semi_major_f, e_f, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,e,theta,phi,Vk*1e-5,true_anomaly)
+        
+        #calculating the momentum using the results from the function
+        Momentum_function = angular_momentum(semi_major_f,Mns,M2,e_f)
+    
+        V_theta_i = np.sqrt(cgrav*(M1+M2)*Msun*Rsun*Ai*(1-e**2))/separation_i
+        V_radius_i = np.sqrt(cgrav*(M1+M2)*Msun*(2/separation_i-1/(Rsun*Ai)-Ai*Rsun*(1-e**2)/(separation_i**2)))
+        
+        V_radius = V_radius_i + Vk*np.sin(theta)*np.cos(phi)
+        V_theta = V_theta_i + Vk*np.cos(theta)
+        V_phi = Vk*np.sin(theta)*np.sin(phi)
+        
+        V1x = V_radius
+        V1y = np.sqrt(V_theta**2+V_phi**2)
+        
+        
+        R_cm = Mns*separation_i/(Mns+M2) #x direction
+        V_cm_x = Mns*V1x/(Mns+M2) #x dirrection
+        V_cm_y = Mns*V1y/(Mns+M2) #y dirrection
+        
+        Vx1_prime = V1x - V_cm_x
+        Vy1_prime = V1y - V_cm_y
+        
+        Rx1_prime = separation_i - R_cm #+x direction
+        Ry1_prime = 0 
+        
+        Vx2_prime = -V_cm_x
+        Vy2_prime = -V_cm_y
+        
+        Rx2_prime = 0 - R_cm #-x direction
+        Ry2_prime = 0
+        
+        momentum1x = Vx1_prime*Mns*Msun
+        momentum1y = Vy1_prime*Mns*Msun
+        
+        momentum2x = Vx2_prime*M2*Msun
+        momentum2y = Vy2_prime*M2*Msun
+        
+        angular1 = Rx1_prime*momentum1y - Ry1_prime*momentum1x #z direction
+        angular2 = Rx2_prime*momentum2y - Ry2_prime*momentum2x #z direction
+        
+        Momentum_calculated = (angular1 + angular2)
+        
+        if abs(Momentum_function - Momentum_calculated)/Momentum_function>tolerance:
+            print(Vk, theta, phi, true_anomaly, Momentum_calculated, Momentum_function, e)
+            return False
+
+
+    rd.seed()
+        
+    return True
+
+
+
+  
