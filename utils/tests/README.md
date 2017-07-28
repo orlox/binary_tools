@@ -1,6 +1,6 @@
 # utils tests
 
-##kicks
+## kicks
 
 I created a series of functions that randomly sample vaules to create both the kick magnitude and direction. The first is rand_phi() which samples the spherical coordinate phi from 0 to 2pi. The second is rand_theta() which samples the spherical coordinate theta from 0 to pi. The last is rand_velocity(sigma) which accepts a value sigma and returns a random velocity sampled from a maxwellian distribution.
 ```  
@@ -94,6 +94,6 @@ testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=15, n
      return False
 ```
 
-####Run Tests
+#### Run Tests
 
 This is a file that runs all the tests in the test_kicks file at once and saves any graphs that are created in the process
