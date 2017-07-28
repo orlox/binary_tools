@@ -69,3 +69,24 @@ def run_tests():
     else:
         print("testing_eccentric_function_momentum FAILED!!!!!")
     return True
+
+    print("Run testing_inverse_kick")
+    result5 = test_kicks.testing_inverse_kick()
+    if result5:
+        print("testing_inverse_kick worked")
+    else:
+        print("testing_inverse_kick FAILED!!!!!")
+    return True
+
+    print("Run testing_momentum_full_eccentric")
+    result6 = test_kicks.testing_momentum_full_eccentric()
+    if result6:
+        print("testing_momentum_full_eccentric worked")
+    else:
+        print("testing_momentum_full_eccentric FAILED!!!!!")
+    return True
+
+
+
+
+
