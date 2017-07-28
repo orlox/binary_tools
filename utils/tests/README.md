@@ -75,4 +75,25 @@ testing_eccentric_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, num_sample=100, seed = "G
   if e_a > 1e-4 or e_p > 1e-4:
     return False
 ```
+An additional test was created for the post_explosions_params_general function that kicks a circular system with mass loss, then reverses that with mass gain back into a circular orbit
+```
+testing_inverse_kick(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=1000, num_sample=100, seed="Tamlin",tolerance=1e-4)
 
+ semi_major_i, e_i, boulean_i = kicks.post_explosion_params_general(Ai,M1,M2,Mns,0,theta,0,V_kick,0)
+ k = semi_major_i*(1-e_i**2)/(e_i*Ai) - 1/e_i       
+ true_anomaly = np.arccos(k)       
+semi_major_f, e_f, boulean_f = kicks.post_explosion_params_general(semi_major_i,Mns,M2,M1,e_i,np.pi-theta,np.pi,V_kick,true_anomaly)
+```
+
+A full version of the momentum test was also created to test the post_explosion_params_general in the case of an initial eccentric orbit.
+The momentum is calculated in a slightly different method from the previous momentum funcitons.
+```
+testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=15, num_sample=100, seed="Lucien",tolerance=1e-4
+ if abs(Momentum_function - Momentum_calculated)/Momentum_function>tolerance:
+     print(Vk, theta, phi, true_anomaly, Momentum_calculated, Momentum_function, e)
+     return False
+```
+
+####Run Tests
+
+This is a file that runs all the tests in the test_kicks file at once and saves any graphs that are created in the process
