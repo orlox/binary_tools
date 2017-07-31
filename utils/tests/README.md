@@ -2,19 +2,21 @@
 
 ## kicks
 
-I created a series of functions that randomly sample vaules to create both the kick magnitude and direction. The first is rand_phi() which samples the spherical coordinate phi from 0 to 2pi. The second is rand_theta() which samples the spherical coordinate theta from 0 to pi. The last is rand_velocity(sigma) which accepts a value sigma and returns a random velocity sampled from a maxwellian distribution.
+The kicks file contains a series of functions that randomly sample vaules to create both the kick magnitude and direction, and another seriers of functions that makes a preditions of the final system post kick. 
+
+The first is rand_phi() which samples the spherical coordinate phi from 0 to 2pi. The second is rand_theta() which samples the spherical coordinate theta from 0 to pi. The last is rand_velocity(sigma) which accepts a value sigma and returns a random velocity sampled from a maxwellian distribution.
 ```  
 rand_velocity = maxwell.isf(rd.random(), 0, scale = sigma)
 return rand_velocity
 ```
 
-Anther function I created is a function that accepts initial conditions on a circular binary system and returns the final conditions on the system post super nova.
+The following function created is a function that accepts initial conditions on a circular binary system and returns the final conditions on the system post super nova.
 ```
 post_explosion_params_circular(Ai, M1, M2, M1f, theta, phi, Vk)
 return Af/Rsun, e, theta_new, unbound
 ```
 
-I also created a series of functions related to sampling an eccentric system with a kick. The first function finds the true anomaly of the system, then the second uses that true anomaly to find the separation of the system.
+To consider a non circular system, a series of functions were created to sample an eccentric system with a kick. The first function finds a random true anomaly of the system, then the second uses that true anomaly to find the separation of the system.
 ```
 def rand_separation(e, Ai):
     u = rand_true_anomaly(e)
@@ -31,7 +33,9 @@ return Af/Rsun, e_final, bound
 
 ### test kicks
 
-I created a series of tests that compare the distributions created from sampling the functions in kicks.py to what we expect the distributions to be.
+Test kicks is a file containing a series of tests for the functions in kicks. 
+
+The first set of functions the compare the distributions created from sampling the functions in kicks.py to the expected distributions.
 
 ```
 test_rand_phi(num_sample=10000, nbins=20, tolerance = 1e-3, seed="Jean", plot=False, save=True)
@@ -61,7 +65,7 @@ testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, t
 ![test post_explosion_circular](images/post_explosion_circular_graph.png)
 
 
-I also created a function that tests the post_explosion_params_circular function by comparing the momentum calculated from that fuction, to a momentum calculated from other known values
+In order to fully test post_explosion_params_circular function, a second function was created in addition to testing_circular_function_graph which works by comparing the momentum calculated from that fuction, to a momentum calculated from other known values.
 ```
 testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=1000, 
 seed = "Lela", tolerance=1e-3)
@@ -97,3 +101,23 @@ testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=15, n
 #### Run Tests
 
 This is a file that runs all the tests in the test_kicks file at once and saves any graphs that are created in the process
+```
+    print("Run test_rand_phi")
+    result1 = test_kicks.test_rand_phi()
+    if result1:
+        print("test_rand_phi worked")
+    else:
+print("test_rand_phi FAILED!!!!!")
+```
+##### Orbits
+
+This file contains small functions that are used repeatedly thoughout larger blocks of code
+```
+def angular_momentum(A,M1,M2,e):
+    L =  M1*Msun*M2*Msun*np.sqrt(cgrav*A*Rsun*(1-e**2)/((M1+M2)*Msun))
+    return L
+```
+
+###### Priors
+
+In this file there are a series of functions that calculate the probability of initial conditions on a binary system.
