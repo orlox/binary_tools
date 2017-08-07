@@ -121,3 +121,17 @@ def angular_momentum(A,M1,M2,e):
 ###### Priors
 
 In this file there are a series of functions that calculate the probability of initial conditions on a binary system.
+
+The first part contains a few default functions that are used throughout the rest of the code
+
+The second part of this file contains a series of probabilities for the initial conditions on a binary system
+
+The third part of the file has the first set of random fuctions calculated through the Montecarlo sampling method and drawing a random number from an array of possibilities using a given distribution
+
+The fourth part contains the second set of random functions calculated through the Montecarlo method of using the cumulative distribution function and finding the inverse
+
+
+![test mass](images/mass_distribution.png)
+![test mass_log](images/mass_log_distribution.png)
+![test ratio](images/ratio_distribution.png)
+![test period_log](images/period_log_distribution.png)
