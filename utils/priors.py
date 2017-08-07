@@ -121,7 +121,7 @@ def rand_mass(Mlow,Mup,alpha=2.3,f_M=default_function):
     FM = lambda Mtemp: f_M(Mtemp,alpha)
     normalize = quad(FM,Mlow,Mup)[0]
     
-    max = f_M(Mlow,alpha)/normalize
+    max = FM(Mlow)/normalize
     
     while True:
         randx = rd.uniform(Mlow,Mup)
@@ -196,7 +196,7 @@ def rand_period_log(Plow,Pup,beta=0,f_M=default_function_log):
         - Pup: the highest absolute period
         - beta: the exponential value in the function
         - f_M: the function used to calculate the probability
-    Returns a random period
+    Returns a random period in days
     """
     alpha = beta
     
