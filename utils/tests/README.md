@@ -168,4 +168,4 @@ Using Rlow=0.01, Rup=0.99, and test_alpha=2 the following ratio distribution is 
 ![test ratio](images/ratio_distribution.png)
 
 Using Plow=0, Pup=3.6, and test_alpha=0 the folling period log distribution is created
-![test period_log](images/period_log_distribution.png)
+![test period_log](images/period_distribution.png)
