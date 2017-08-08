@@ -31,7 +31,7 @@ post_explosion_params_general( Ai, M1, M2, Mns, e, theta, phi, Vk, true_anomaly)
 return Af/Rsun, e_final, bound
 ```
 
-### test kicks
+## test kicks
 
 Test kicks is a file containing a series of tests for the functions in kicks. 
 
@@ -98,7 +98,7 @@ testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=15, n
      return False
 ```
 
-#### Run Tests
+## Run Tests
 
 This is a file that runs all the tests in the test_kicks file at once and saves any graphs that are created in the process
 ```
@@ -109,7 +109,7 @@ This is a file that runs all the tests in the test_kicks file at once and saves 
     else:
 print("test_rand_phi FAILED!!!!!")
 ```
-##### Orbits
+## Orbits
 
 This file contains small functions that are used repeatedly thoughout larger blocks of code
 ```
@@ -118,7 +118,7 @@ def angular_momentum(A,M1,M2,e):
     return L
 ```
 
-###### Priors
+## Priors
 
 In this file there are a series of functions that calculate the probability of initial conditions on a binary system.
 
