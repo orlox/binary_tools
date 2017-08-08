@@ -123,15 +123,49 @@ def angular_momentum(A,M1,M2,e):
 In this file there are a series of functions that calculate the probability of initial conditions on a binary system.
 
 The first part contains a few default functions that are used throughout the rest of the code
+```
+def default_function(M,alpha):
+return M**(-alpha)
+```
 
 The second part of this file contains a series of probabilities for the initial conditions on a binary system
+```
+prob_mass(M1,M2,Mlow,Mup,alpha=2.3,f_M=default_function)
+```
 
 The third part of the file has the first set of random fuctions calculated through the Montecarlo sampling method and drawing a random number from an array of possibilities using a given distribution
+```
+rand_mass(Mlow,Mup,alpha=2.3,f_M=default_function)
+
+    while True:
+        randx = rd.uniform(Mlow,Mup)
+        randy = rd.uniform(0, max)
+        
+        if (f_M(randx,alpha)/normalize) >randy:
+            return randx
+```
 
 The fourth part contains the second set of random functions calculated through the Montecarlo method of using the cumulative distribution function and finding the inverse
+```
+rand_mass_cdf(Mlow,Mup,alpha=2.3,f_M=default_function)
 
+    rand_mass = ((1-alpha)*normalize*rd.random()+Mlow**(1-alpha))**(1/(1-alpha))
+    return rand_mass
+```
 
+The fifth and final part of the file contains tests for the probability functions and the random functions
+```
+test_rand_mass(Mlow,Mup,num_sample=10000, nbins=20, tolerance = 1e-3, seed="Feyra", cdf=True, plot=False, save=True)
+```
+
+Using Mlow=1 and Mup=100 the following mass distribution is created
 ![test mass](images/mass_distribution.png)
+
+Using Mlow=0 and Mup=2 the following mass log distribution is created
 ![test mass_log](images/mass_log_distribution.png)
+
+Using Rlow=0.01, Rup=0.99, and test_alpha=2 the following ratio distribution is created
 ![test ratio](images/ratio_distribution.png)
+
+Using Plow=0, Pup=3.6, and test_alpha=0 the folling period log distribution is created
 ![test period_log](images/period_log_distribution.png)
