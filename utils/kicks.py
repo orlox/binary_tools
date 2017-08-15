@@ -2,6 +2,7 @@
 import random as rd
 import numpy as np
 from binary_tools.utils.constants import *
+from binary_tools.utils.orbits import *
 from scipy.stats import maxwell
 
 __author__ = "Kaliroe Pappas"
