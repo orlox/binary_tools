@@ -26,7 +26,7 @@ def angular_momentum(A,M1,M2,e):
     return L
 
 
-def separation(A,e,true_anomaly):
+def separation_function(A,e,true_anomaly):
     """A function that calculates the separation
     of a binary system
     Arguments:

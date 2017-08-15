@@ -721,7 +721,7 @@ def testing_momentum_full_eccentric(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=1
         theta = kicks.rand_theta()
         phi = kicks.rand_phi()
         true_anomaly = kicks.rand_true_anomaly(e) 
-        separation_i = Rsun*separation(Ai,e,true_anomaly)
+        separation_i = Rsun*separation_function(Ai,e,true_anomaly)
     
         #getting values from the post_explosion_params_general function
         semi_major_f, e_f, boolean = kicks.post_explosion_params_general(Ai, M1, M2, Mns,e,theta,phi,Vk*1e-5,true_anomaly)

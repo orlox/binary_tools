@@ -180,7 +180,7 @@ def post_explosion_params_general( Ai, M1, M2, Mns, e, theta, phi, Vk, true_anom
     Mns = Mns*Msun
     Ai = Ai*Rsun
     Vk = Vk*1e5
-    separation = separation(Ai,e,true_anomaly)
+    separation = separation_function(Ai,e,true_anomaly)
     
     V_theta = np.sqrt(cgrav*(M1+M2)*Ai*(1-e**2))/separation
     V_radius = np.sqrt(cgrav*(M1+M2)*(2/separation-1/Ai-Ai*(1-e**2)/(separation**2)))
