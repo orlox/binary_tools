@@ -462,16 +462,18 @@ def testing_eccentric_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 
         semi_major, e, boolean = kicks.post_explosion_params_general(test_Ai,\
         test_M1, test_M2, test_Mns, 0, kicks.rand_theta(), kicks.rand_phi(),\
         kicks.rand_velocity(test_sigma),kicks.rand_true_anomaly(0))
-        testing_function[i][0] = semi_major
-        testing_function[i][1] = e
+        if semi_major > 0:
+            testing_function[i][0] = semi_major
+            testing_function[i][1] = e
     
     theta = np.linspace(0,3.14,npoints)
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
         semi_major, e, boolean = kicks.post_explosion_params_general(test_Ai, test_M1, test_M2, test_Mns,0,theta[j],0,sample_velocity,0)
-        constant_velocity[j][0] = semi_major 
-        constant_velocity[j][1] = e
+        if semi_major > 0:
+            constant_velocity[j][0] = semi_major 
+            constant_velocity[j][1] = e
     
     """changing the semi-major axis to period values in days"""
     
