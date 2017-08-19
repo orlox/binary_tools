@@ -393,16 +393,18 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
 
     for i in range(len(testing_function)):  
         semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
-        testing_function[i][0] = semi_major
-        testing_function[i][1] = e
+        if semi_major > 0:
+            testing_function[i][0] = semi_major
+            testing_function[i][1] = e
     
     theta = np.linspace(0,3.14,npoints)
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
         semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity)
-        constant_velocity[j][0] = semi_major 
-        constant_velocity[j][1] = e
+        if semi_major > 0:
+            constant_velocity[j][0] = semi_major 
+            constant_velocity[j][1] = e
     
     """changing the semi-major axis to period values in days"""
     
