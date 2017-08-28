@@ -1,33 +1,50 @@
 import numpy as np
 import numpy.ma as ma
+import h5py
 
 #class to extract a mesa data file.
 class mesa_data:
-    def __init__(self, history_file, only_read_header = False, read_data = True, read_data_cols = [], clean_data = True):
+    def __init__(self, history_file, only_read_header = False, read_data = True, read_data_cols = [], clean_data = True, is_hdf5 = False):
         self.filename = history_file
+        self.is_hdf5 = is_hdf5
         #header is a dictionary with the general info from the second and third line of file
         self.header = {}
+        self.header_num = {}
         #columns is a dictionary which gives the column number (minus 1) corresponding to the key
         self.columns = {}
-        file = open(self.filename, "r")
-        #first line is not used
-        file.readline()
-        #following two lines have header data
-        header_names = file.readline().split()
-        header_vals = file.readline().split()
-        for i, header_name in enumerate(header_names):
-            self.header[header_name] = float(header_vals[i])
-        if only_read_header:
+        if not is_hdf5:
+            file = open(self.filename, "r")
+            #first line is not used
+            file.readline()
+            #following two lines have header data
+            header_names = file.readline().split()
+            header_vals = file.readline().split()
+            for i, header_name in enumerate(header_names):
+                self.header[header_name] = float(header_vals[i])
+                self.header_num[header_name] = i
+            if only_read_header:
+                file.close()
+                return
+            #next line is empty
+            file.readline()
+            #following two lines have column data
+            nums = file.readline().split()
+            names = file.readline().split()
+            for i, name in enumerate(names):
+                self.columns[name] = int(nums[i])-1
             file.close()
-            return
-        #next line is empty
-        file.readline()
-        #following two lines have column data
-        nums = file.readline().split()
-        names = file.readline().split()
-        for i, name in enumerate(names):
-            self.columns[name] = int(nums[i])-1
-        file.close()
+        else:
+            file = h5py.File(self.filename, "r")
+            header_names = file['header_names'][:]
+            header_vals = file['header_vals'][:]
+            for i in range(len(header_names)):
+                key = header_names[i].decode('utf-8')
+                self.header[key] = header_vals[i]
+                self.header_num[key] = i
+            columns = file['data_names'][:]
+            for i, col in enumerate(columns):
+                self.columns[col.decode('utf-8')] = i
+            file.close()
 
         if not read_data:
             return
@@ -42,9 +59,18 @@ class mesa_data:
         if "model_number" not in column_names and "model_number" in self.columns:
             column_names.append("model_number")
 
-        #read data
-        data = np.loadtxt(self.filename, skiprows = 6, \
-            usecols = tuple([self.columns[k] for k in column_names]), unpack = True)
+        self.read_columns = column_names
+
+        if not self.is_hdf5:
+            #read data
+            data = np.loadtxt(self.filename, skiprows = 6, \
+                usecols = tuple([self.columns[k] for k in column_names]), unpack = True)
+        else:
+            file = h5py.File(self.filename, "r")
+            print(file['data_vals'][:,0])
+            data = file['data_vals'][:,sorted([self.columns[k] for k in column_names])]
+            print(sorted([self.columns[k] for k in column_names]))
+            file.close()
 
         self.data = {}
         #Be careful in case only one column is required
@@ -63,6 +89,7 @@ class mesa_data:
             #last entry is valid, start from there and remove repeats
             for i in range(len(model_number)-2,-1,-1):
                 if model_number[i] >= max_model_number:
+                    #exclude this point
                     mask[i] = 1
                 else:
                     max_model_number = model_number[i]
@@ -70,9 +97,65 @@ class mesa_data:
             if sum(mask) > 0:
                 for column in column_names:
                     self.data[column] = ma.masked_array(self.data[column], mask=mask).compressed()
+                    
+        #count number of points using first entry in dict
+        self.num_points = len(self.data[list(self.read_columns)[0]])
 
     def get(self,key):
         return self.data[key]
+
+    def save_as_hdf5(self, filename, str_dtype="S28", compression_opts=4):
+        f = h5py.File(filename, "w")
+        dset_header_names = f.create_dataset("header_names", (len(self.header),), dtype=str_dtype)
+        dset_header_vals = f.create_dataset("header_vals", (len(self.header),), dtype="f")
+        for key in self.header:
+            dset_header_names[self.header_num[key]] = np.string_(key)
+            dset_header_vals[self.header_num[key]] = self.header[key]
+        dset_column_names = f.create_dataset("data_names", (len(self.read_columns),), dtype=str_dtype)
+        dset_column_vals = f.create_dataset("data_vals", (len(self.read_columns),self.num_points), dtype="f",
+                compression='gzip',compression_opts=compression_opts)
+        for k, key in enumerate(self.read_columns):
+            dset_column_names[k] = np.string_(key)
+            dset_column_vals[k,:] = self.data[key]
+        f.close()
+
+    #creates a mesa look-alike output file
+    #prints all integers as doubles
+    #not the most efficient code but I don't care
+    def save_as_ascii(self, filename, str_format="{0:>28}", double_format="{0:>28e}"):
+        f = open(filename, "w")
+        for i in range(len(list(self.header))):
+            f.write(str_format.format(i+1))
+        f.write("\n")
+        #create an ordered list of keys
+        header_keys = []
+        for i in range(len(list(self.header))):
+            for key in self.header:
+                if self.header_num[key] == i:
+                    header_keys.append(key)
+                    break
+        for i, key in enumerate(header_keys):
+            f.write(str_format.format(key))
+        f.write("\n")
+        for i, key in enumerate(header_keys):
+            f.write(double_format.format(self.header[key]))
+        f.write("\n")
+        f.write("\n")
+
+        for i in range(len(list(self.read_columns))):
+            f.write(str_format.format(i+1))
+        f.write("\n")
+
+        for i, key in enumerate(self.read_columns):
+            f.write(str_format.format(key))
+        for k in range(self.num_points):
+            f.write("\n")
+            for i, key in enumerate(self.read_columns):
+                f.write(double_format.format(self.data[key][k]))
+
+        f.close()
+
+
 
 #reads the profiles.index files in the folders specified by the logs_dirs array and returns
 #an array containing paths to the individual profile files, after cleaning up redos and backups
