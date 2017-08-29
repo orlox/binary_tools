@@ -21,6 +21,11 @@ class mesa_data:
             header_names = file.readline().split()
             header_vals = file.readline().split()
             for i, header_name in enumerate(header_names):
+                #some columns might be repeated. For instance, when binary appends the columns
+                #from binary_history.data, model_number will appear twice. Whenever this happens
+                #just use the first instance
+                if header_name in self.header.keys():
+                    continue
                 self.header[header_name] = float(header_vals[i])
                 self.header_num[header_name] = i
             if only_read_header:
@@ -40,7 +45,12 @@ class mesa_data:
             header_names = file['header_names'][:]
             header_vals = file['header_vals'][:]
             for i in range(len(header_names)):
+                #some columns might be repeated. For instance, when binary appends the columns
+                #from binary_history.data, model_number will appear twice. Whenever this happens
+                #just use the first instance
                 key = header_names[i].decode('utf-8')
+                if key in self.header.keys():
+                    continue
                 self.header[key] = header_vals[i]
                 self.header_num[key] = i
             columns = file['data_names'][:].tolist()
@@ -70,15 +80,22 @@ class mesa_data:
                 usecols = tuple([self.columns[k] for k in column_names]), unpack = True)
         else:
             file = h5py.File(self.filename, "r")
-            data = file['data_vals'][:,sorted([self.columns[k] for k in column_names])]
+            data = file['data_vals'][:,sorted([self.columns[k] for k in set(column_names)])]
             data = data.transpose()
             file.close()
 
         self.data = {}
         #Be careful in case only one column is required
         if len(data.shape) > 1:
+            #some columns might be repeated. For instance, when binary appends the columns
+            #from binary_history.data, model_number will appear twice. Whenever this happens
+            #just use the first instance
+            repeats = 0
             for i, column in enumerate(column_names):
-                self.data[column] = data[i]
+                if column in self.data:
+                    repeats += 1
+                    continue
+                self.data[column] = data[i-repeats]
         else:
             self.data[column_names[0]] = data
 
@@ -98,6 +115,11 @@ class mesa_data:
 
             if sum(mask) > 0:
                 for column in column_names:
+                    #some columns might be repeated. For instance, when binary appends the columns
+                    #from binary_history.data, model_number will appear twice. Whenever this happens
+                    #just use the first instance
+                    if column in self.data.keys():
+                        continue
                     self.data[column] = ma.masked_array(self.data[column], mask=mask).compressed()
                     
         #count number of points using first entry in dict
