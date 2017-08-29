@@ -12,6 +12,7 @@ class mesa_data:
         self.header_num = {}
         #columns is a dictionary which gives the column number (minus 1) corresponding to the key
         self.columns = {}
+        columns = []
         if not is_hdf5:
             file = open(self.filename, "r")
             #first line is not used
@@ -32,6 +33,7 @@ class mesa_data:
             names = file.readline().split()
             for i, name in enumerate(names):
                 self.columns[name] = int(nums[i])-1
+                columns.append(name)
             file.close()
         else:
             file = h5py.File(self.filename, "r")
@@ -41,16 +43,17 @@ class mesa_data:
                 key = header_names[i].decode('utf-8')
                 self.header[key] = header_vals[i]
                 self.header_num[key] = i
-            columns = file['data_names'][:]
+            columns = file['data_names'][:].tolist()
             for i, col in enumerate(columns):
                 self.columns[col.decode('utf-8')] = i
+                columns[i] = col.decode('utf-8')
             file.close()
 
         if not read_data:
             return
 
         if len(read_data_cols) == 0:
-            read_data_cols = self.columns.keys()
+            read_data_cols = columns
         self.read_data(read_data_cols, clean_data = clean_data)
 
 
@@ -67,9 +70,8 @@ class mesa_data:
                 usecols = tuple([self.columns[k] for k in column_names]), unpack = True)
         else:
             file = h5py.File(self.filename, "r")
-            print(file['data_vals'][:,0])
             data = file['data_vals'][:,sorted([self.columns[k] for k in column_names])]
-            print(sorted([self.columns[k] for k in column_names]))
+            data = data.transpose()
             file.close()
 
         self.data = {}
@@ -104,28 +106,29 @@ class mesa_data:
     def get(self,key):
         return self.data[key]
 
-    def save_as_hdf5(self, filename, str_dtype="S28", compression_opts=4):
+    def save_as_hdf5(self, filename, header_str_dtype="S28", data_str_dtype="S40", compression_opts=4):
         f = h5py.File(filename, "w")
-        dset_header_names = f.create_dataset("header_names", (len(self.header),), dtype=str_dtype)
-        dset_header_vals = f.create_dataset("header_vals", (len(self.header),), dtype="f")
+        dset_header_names = f.create_dataset("header_names", (len(self.header),), dtype=header_str_dtype)
+        dset_header_vals = f.create_dataset("header_vals", (len(self.header),), dtype="d")
         for key in self.header:
             dset_header_names[self.header_num[key]] = np.string_(key)
             dset_header_vals[self.header_num[key]] = self.header[key]
-        dset_column_names = f.create_dataset("data_names", (len(self.read_columns),), dtype=str_dtype)
-        dset_column_vals = f.create_dataset("data_vals", (len(self.read_columns),self.num_points), dtype="f",
+        dset_column_names = f.create_dataset("data_names", (len(self.read_columns),), dtype=data_str_dtype)
+        dset_column_vals = f.create_dataset("data_vals", (self.num_points,len(self.read_columns)), dtype="d",
                 compression='gzip',compression_opts=compression_opts)
         for k, key in enumerate(self.read_columns):
             dset_column_names[k] = np.string_(key)
-            dset_column_vals[k,:] = self.data[key]
+            dset_column_vals[:,k] = self.data[key]
         f.close()
 
     #creates a mesa look-alike output file
     #prints all integers as doubles
     #not the most efficient code but I don't care
-    def save_as_ascii(self, filename, str_format="{0:>28}", double_format="{0:>28e}"):
+    def save_as_ascii(self, filename, header_str_format="{0:>28}", header_double_format="{0:>28.16e}",
+            data_str_format="{0:>40}", data_double_format="{0:>40.16e}"):
         f = open(filename, "w")
         for i in range(len(list(self.header))):
-            f.write(str_format.format(i+1))
+            f.write(header_str_format.format(i+1))
         f.write("\n")
         #create an ordered list of keys
         header_keys = []
@@ -135,23 +138,23 @@ class mesa_data:
                     header_keys.append(key)
                     break
         for i, key in enumerate(header_keys):
-            f.write(str_format.format(key))
+            f.write(header_str_format.format(key))
         f.write("\n")
         for i, key in enumerate(header_keys):
-            f.write(double_format.format(self.header[key]))
+            f.write(header_double_format.format(self.header[key]))
         f.write("\n")
         f.write("\n")
 
         for i in range(len(list(self.read_columns))):
-            f.write(str_format.format(i+1))
+            f.write(data_str_format.format(i+1))
         f.write("\n")
 
         for i, key in enumerate(self.read_columns):
-            f.write(str_format.format(key))
+            f.write(data_str_format.format(key))
         for k in range(self.num_points):
             f.write("\n")
             for i, key in enumerate(self.read_columns):
-                f.write(double_format.format(self.data[key][k]))
+                f.write(data_double_format.format(self.data[key][k]))
 
         f.close()
 

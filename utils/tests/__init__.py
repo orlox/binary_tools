@@ -1,1 +1,1 @@
-__all__ = ["constants", "kicks"]
+__all__ = ["run_tests","test_kicks"]
