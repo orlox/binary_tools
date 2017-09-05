@@ -21,11 +21,6 @@ class mesa_data:
             header_names = file.readline().split()
             header_vals = file.readline().split()
             for i, header_name in enumerate(header_names):
-                #some columns might be repeated. For instance, when binary appends the columns
-                #from binary_history.data, model_number will appear twice. Whenever this happens
-                #just use the first instance
-                if header_name in self.header.keys():
-                    continue
                 self.header[header_name] = float(header_vals[i])
                 self.header_num[header_name] = i
             if only_read_header:
@@ -37,6 +32,11 @@ class mesa_data:
             nums = file.readline().split()
             names = file.readline().split()
             for i, name in enumerate(names):
+                #some columns might be repeated. For instance, when binary appends the columns
+                #from binary_history.data, model_number will appear twice. Whenever this happens
+                #just use the first instance
+                if name in self.columns.keys():
+                    continue
                 self.columns[name] = int(nums[i])-1
                 columns.append(name)
             file.close()
@@ -45,18 +45,18 @@ class mesa_data:
             header_names = file['header_names'][:]
             header_vals = file['header_vals'][:]
             for i in range(len(header_names)):
-                #some columns might be repeated. For instance, when binary appends the columns
-                #from binary_history.data, model_number will appear twice. Whenever this happens
-                #just use the first instance
                 key = header_names[i].decode('utf-8')
-                if key in self.header.keys():
-                    continue
                 self.header[key] = header_vals[i]
                 self.header_num[key] = i
             columns = file['data_names'][:].tolist()
             for i, col in enumerate(columns):
-                self.columns[col.decode('utf-8')] = i
+                #some columns might be repeated. For instance, when binary appends the columns
+                #from binary_history.data, model_number will appear twice. Whenever this happens
+                #just use the first instance
                 columns[i] = col.decode('utf-8')
+                if columns[i] in self.columns.keys():
+                    continue
+                self.columns[columns[i]] = i
             file.close()
 
         if not read_data:
