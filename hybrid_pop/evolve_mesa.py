@@ -16,13 +16,13 @@ __email__ = "pamarca@gmail.com"
 TODO: properly explain
 """
 
-def evolve(hist1="LOGS1/history.data", hist2="LOGS2/history.data",bhist="binary_history.data",theta=0,phi=0,vkick=0,outfile="output.data"):
+def evolve(hist1="LOGS1/history.data", hist2="LOGS2/history.data",bhist="binary_history.data",is_hdf5=False,theta=0,phi=0,vkick=0,outfile="output.data"):
     """TODO: explain
     """
 
-    hist1 = mesa_data(hist1)
-    hist2 = mesa_data(hist2)
-    bhist = mesa_data(bhist)
+    hist1 = mesa_data(hist1, is_hdf5 = is_hdf5)
+    hist2 = mesa_data(hist2, is_hdf5 = is_hdf5)
+    bhist = mesa_data(bhist, is_hdf5 = is_hdf5)
 
     #find pre-explosion conditions
     for index, pmi in enumerate(bhist.get("point_mass_index")):
@@ -78,7 +78,7 @@ def evolve(hist1="LOGS1/history.data", hist2="LOGS2/history.data",bhist="binary_
     RL2 = np.zeros(len(m2))
     RL2[0] = eval_roche_lobe(m2[0],m1[0],separation[0])
     period = np.zeros(len(m2))
-    period[0] = keplers_third_law(separation[0]*Rsun/1e5, m1[0], m2[0])
+    period[0] = keplers_third_law(separation[0], m1[0], m2[0])
 
     print("####Post-explosion parameters####")
     print("M1(Msun):"+'{0:>5e}'.format(post_exp_m1))
@@ -147,7 +147,7 @@ def evolve(hist1="LOGS1/history.data", hist2="LOGS2/history.data",bhist="binary_
                 *(m1[i]+m2[i])*Msun / cgrav / (1 - eccentricity[i]**2)
         separation[i] = separation[i]/Rsun
 
-        period[i] = keplers_third_law(separation[i]*Rsun/1e5, m1[i], m2[i])
+        period[i] = keplers_third_law(separation[i]*Rsun, m1[i], m2[i])
         RL2[i] = eval_roche_lobe(m2[i],m1[i],separation[i])
 
         #print(i-1, age[i-1], m1[i-1], m2[i-1], separation[i-1], period[i-1], eccentricity[i-1],am[i-1])
