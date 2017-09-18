@@ -1,3 +1,5 @@
 *.pyc
 *.swp
 *.png
+test.data*
+test.hdf5*
