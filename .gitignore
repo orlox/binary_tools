@@ -3,3 +3,4 @@
 *.png
 test.data*
 test.hdf5*
+.ipynb_checkpoints
