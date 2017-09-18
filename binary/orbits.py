@@ -46,7 +46,7 @@ def kepler3_a(P,m1,m2):
         - true_anomaly: the current true anomaly
     Returns the semimajor axis in solar radii.
     """
-    return float(((P*24.*3600.)**2*cgrav*(m1+m2)*Msun/(4.*math.pi**2))**(1./3.)/Rsun);
+    return float(((P*24.*3600.)**2*cgrav*(m1+m2)*Msun/(4.*np.pi**2))**(1./3.)/Rsun);
 
 def kepler3_P(a,m1,m2):
     """Calculates the period of a binary from its semimajor axis and masses
@@ -57,4 +57,4 @@ def kepler3_P(a,m1,m2):
         - true_anomaly: the current true anomaly
     Returns the semimajor axis in solar radii.
     """
-    return float((4.*math.pi**2*(a*Rsun)**3/(cgrav*(m1+m2)*Msun))**(1./2.)/(24.*3600.));
+    return float((4.*np.pi**2*(a*Rsun)**3/(cgrav*(m1+m2)*Msun))**(1./2.)/(24.*3600.));

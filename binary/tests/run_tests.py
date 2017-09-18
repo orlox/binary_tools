@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from binary_tools.utils.tests import test_kicks
+from binary_tools.binary.tests import test_kicks
 
 __author__ = "Kaliroe Pappas"
 __credits__ = ["Kaliroe Pappas"]

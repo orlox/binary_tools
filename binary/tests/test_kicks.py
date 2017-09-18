@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-from binary_tools.utils.constants import *
-from binary_tools.utils import kicks
-from binary_tools.utils.Keplers_laws import *
-from binary_tools.utils.orbits import *
+from binary_tools.constants import *
+from binary_tools.binary import kicks
+from binary_tools.binary.orbits import *
 import matplotlib.pyplot as plt
 from scipy.stats import maxwell
 from scipy.integrate import quad
@@ -290,11 +289,7 @@ def test_rand_true_anomaly(e,num_sample=10000, nbins=20, tolerance = 1e-3, seed=
     return success
 
 
-
-
-
-
-def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigma=100, num_sample=1000, seed = "Lela", tolerance=1e-3):
+def testing_circular_function_momentum(ai=133, m1=5.5, m2=55, m1f=1.4, test_sigma=100, num_sample=1000, seed = "Lela", tolerance=1e-3):
     """Test that the post_explosion_params_circular function produces
     a correct angular momentum against a calculated angular momentum. This 
     angular momentum is calculated by first finding the anglar velocity, and 
@@ -306,12 +301,12 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
     total angular momentum is calculated by taking the absolute value of these 
     components. 
     Arguments:
-        - Ai: the initial semi-major axis of the system
-            pre-explosion
-        - M1: solar mass of the first mass pre-explosion
-        - M2: solar mass of the second mass
-        - Mns: solar mass of the first mass post-explosion
-        - test_sigma: a sample sigma for the rand_velocity function
+        - ai: the initial semi-major axis of the system
+            pre-explosion in Rsun
+        - m1: mass of the pre-explosion star in Msun
+        - m2: smass of the companion in Msun
+        - m1f: post explosion mass of the exploding star in Msun
+        - test_sigma: a sample sigma for the rand_velocity function in km/s
         - num_sample: number of points sampled
         - seed: the seed used for the random number generator
         - tolerance: tolerance for the test
@@ -327,19 +322,19 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
         phi = kicks.rand_phi()
         
         #getting values from the post_explosion_params_circular function
-        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(Ai, M1, M2, Mns,theta,phi,Vk)
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(ai, m1, m2, m1f,theta,phi,Vk)
         
         #calculating the momentum using the results from the function
-        Momentum_function = angular_momentum(semi_major,Mns,M2,e)
+        Momentum_function = orbital_angular_momentum(semi_major,m1f,m2,e)
         
         #Calculating the momentum without using the results of the function
         
         #establishing angular velocity 
-        omega = np.sqrt(cgrav*Msun*(M1+M2)/(Ai*Rsun)**3) #rad/second
+        omega = np.sqrt(cgrav*Msun*(m1+m2)/(ai*Rsun)**3) #rad/second
         
         #velocities of the masses before the kick 
-        V1_initial = M2/(M1+M2)*omega*Ai*Rsun #cm/second
-        V2 = M1/(M1+M2)*omega*Ai*Rsun #cm/second,-y direction
+        V1_initial = m2/(m1+m2)*omega*ai*Rsun #cm/second
+        V2 = m1/(m1+m2)*omega*ai*Rsun #cm/second,-y direction
         
         #velocities after the kick, V2 is unaffected by the kick
         V1x_final = Vk*1e5*np.sin(phi)*np.cos(theta)
@@ -347,13 +342,13 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
         V1z_final = Vk*1e5*np.sin(phi)*np.sin(theta)
         
         #separations from the center of mass in the center of mass frame post-explosion
-        R2 = Ai*Rsun*Mns/(Mns+M2) #cm
-        R1 = Ai*Rsun - R2 #cm
+        R2 = ai*Rsun*m1f/(m1f+m2) #cm
+        R1 = ai*Rsun - R2 #cm
         
         #calculating the components of the angular momentum using the cross product
-        Momentum_1y = -R1*V1z_final*Mns*Msun
-        Momentum_1z = R1*V1y_final*Mns*Msun
-        Momentum_2 = R2*V2*M2*Msun #z direction
+        Momentum_1y = -R1*V1z_final*m1f*Msun
+        Momentum_1z = R1*V1y_final*m1f*Msun
+        Momentum_2 = R2*V2*m2*Msun #z direction
         
         #absolute value of the components of the angular momentum
         Momentum_calculated = np.sqrt(Momentum_1y**2 + Momentum_1z**2 + Momentum_2**2)
@@ -370,15 +365,15 @@ def testing_circular_function_momentum(Ai=133, M1=5.5, M2=55, Mns=1.4, test_sigm
 
 
 
-def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 55, test_Ai = 133, test_Mns = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True):
+def testing_circular_function_graph(test_sigma = 100, test_m1 = 5.5, test_m2 = 55, test_ai = 133, test_m1f = 1.4, seed="Flay",sample_velocity = 100, npoints =10000, plot=False, save =True):
     """Test that the graph of the eccentricity vs the period looks correct
     Arguments:
-        - test_sigma: a sample sigma for the rand_velocity function
-        - test_M1: solar mass of the first mass pre-explosion
-        - test_M2: solar mass of the second mass
-        - test_Ai: the initial semi-major axis of the system
-            pre-explosion
-        - test_Mns: solar mass of the first mass post-explosion
+        - test_sigma: a sample sigma for the rand_velocity function in km/s
+        - test_m1: mass of the pre-explosion star in Msun
+        - test_m2: smass of the companion in Msun
+        - test_ai: the initial semi-major axis of the system
+            pre-explosion in Rsun
+        - test_m1f: post explosion mass of the exploding star in Msun
         - seed: the seed used for the random number generator
         - sample_velocity: a constant velocity over which a line is
             drawn on the graph
@@ -392,7 +387,7 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
     constant_velocity = np.zeros([npoints,2])
 
     for i in range(len(testing_function)):  
-        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_ai, test_m1, test_m2, test_m1f, kicks.rand_theta(),kicks.rand_phi(),kicks.rand_velocity(test_sigma))
         if semi_major > 0:
             testing_function[i][0] = semi_major
             testing_function[i][1] = e
@@ -401,7 +396,7 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
     velocity = np.linspace(0,400,npoints)
     
     for j in range(len(constant_velocity)):
-        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_Ai, test_M1, test_M2, test_Mns,theta[j],0,sample_velocity)
+        semi_major, e, angle, boolean = kicks.post_explosion_params_circular(test_ai, test_m1, test_m2, test_m1f,theta[j],0,sample_velocity)
         if semi_major > 0:
             constant_velocity[j][0] = semi_major 
             constant_velocity[j][1] = e
@@ -409,8 +404,8 @@ def testing_circular_function_graph(test_sigma = 100, test_M1 = 5.5, test_M2 = 5
     """changing the semi-major axis to period values in days"""
     
     for k in range(len(testing_function)):
-        testing_function[k][0] = keplers_third_law(testing_function[k][0],test_M2,test_Mns)
-        constant_velocity[k][0] = keplers_third_law(constant_velocity[k][0],test_M2,test_Mns)
+        testing_function[k][0] = kepler3_P(testing_function[k][0],test_m2,test_m1f)
+        constant_velocity[k][0] = kepler3_P(constant_velocity[k][0],test_m2,test_m1f)
     
     if plot:    
         plt.plot(testing_function[:,0], testing_function[:,1], "o")
